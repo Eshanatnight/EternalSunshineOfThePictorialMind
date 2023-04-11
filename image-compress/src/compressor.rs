@@ -1,7 +1,7 @@
 extern crate oxipng;
 
 use oxipng::{optimize, optimize_from_memory};
-use oxipng::{InFile, OutFile, IndexSet, PngError};
+use oxipng::{InFile, IndexSet, OutFile, PngError};
 use std::path::{Path, PathBuf};
 
 pub type PngResult<T> = Result<T, PngError>;
@@ -10,9 +10,10 @@ pub struct Compressor {}
 
 impl Compressor {
     pub fn new() -> Self {
-        Compressor {  }
+        Compressor {}
     }
 
+    #[allow(dead_code)]
     pub fn compress(&self, input: &str) -> PngResult<()> {
         let input = PathBuf::from(input);
         let (output, options) = self.get_opt_with_output(&input);
@@ -36,10 +37,7 @@ impl Compressor {
     }
 
     fn get_options(&self) -> oxipng::Options {
-        let mut options = oxipng::Options {
-            force: true,
-            ..Default::default()
-        };
+        let mut options = oxipng::Options { force: true, ..Default::default() };
 
         let mut filter = IndexSet::new();
         filter.insert(0);
@@ -48,6 +46,7 @@ impl Compressor {
         return options;
     }
 
+    #[allow(dead_code)]
     fn get_opt_with_output(&self, path: &Path) -> (OutFile, oxipng::Options) {
         let output: OutFile = OutFile::Path(Some(path.with_extension("out.png")));
         let options: oxipng::Options = self.get_options();
@@ -56,14 +55,17 @@ impl Compressor {
     }
 }
 
-
 #[test]
 fn test_compress() {
     let engine = Compressor::new();
-    let res = engine.compress("compress.out.png");
+    let res = engine.compress("compress.png");
 
     match res {
-        Ok(_) => {println!("Success")},
-        Err(e) => {panic!("Error {e}")},
+        Ok(_) => {
+            println!("Success")
+        },
+        Err(e) => {
+            panic!("Error {e}")
+        },
     }
 }

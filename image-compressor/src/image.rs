@@ -59,10 +59,10 @@ fn quantize(buffer: &[RGBA], width: usize, height: usize) -> (Vec<RGBA>, Vec<u8>
     let mut liq = imagequant::new();
     match liq.set_speed(1) {
         Err(e) => panic!("{e}"),
-        _ => {}
+        _ => {},
     };
 
-    match liq.set_quality(70, 99){
+    match liq.set_quality(70, 99) {
         Err(e) => panic!("{e}"),
         _ => {},
     };

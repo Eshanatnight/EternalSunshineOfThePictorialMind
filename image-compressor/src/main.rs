@@ -2,8 +2,8 @@ mod image;
 extern crate clap;
 
 use clap::{command, Parser};
-use image::{compress_file, Options};
 use core::panic;
+use image::{compress_file, Options};
 use std::path::Path;
 
 /// Image Compresser Application
@@ -11,7 +11,7 @@ use std::path::Path;
 #[command(name = "ic", about = "Image Compresser Application", long_about = None)]
 #[command(arg_required_else_help = true)]
 struct Cli {
-    /// Image File Path 
+    /// Image File Path
     #[arg(short, long)]
     image: String,
 
@@ -20,10 +20,8 @@ struct Cli {
     add_ext: bool,
 }
 
-
 fn main() {
-
-    let mut opt: Options = Options { add_ext:true };
+    let mut opt: Options = Options { add_ext: true };
 
     let img_path = Cli::parse().image;
     let op = Cli::parse().add_ext;

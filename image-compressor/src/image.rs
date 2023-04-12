@@ -5,12 +5,12 @@ use lodepng::{CompressSettings, State, RGBA};
 use std::io::Read;
 use std::os::raw::c_uchar;
 use std::path::{Path, PathBuf};
-use std::str;
 
 pub struct Options {
     pub add_ext: bool,
 }
 
+#[allow(deprecated)]
 pub fn compress_file(file_name: String, options: Options) {
     let path = Path::new(&file_name);
     if !path.is_file() {
@@ -44,10 +44,11 @@ pub fn compress_file(file_name: String, options: Options) {
     let (palette, pixels) = quantize(&file.buffer, width as usize, height as usize);
     let mut state = make_state();
 
-    match state.encode_file(&out_file_name_path_buf, &pixels, width, height) {
+    add_palette_to_state(&mut state, palette);
+
+    match state.encode_file(&out_file_path, &pixels, width, height) {
         Err(e) => {
-            let err_msg = str::from_utf8(e.c_description());
-            let err_msg = err_msg.ok().unwrap();
+            let err_msg = e.to_string();
             println!("{}", err_msg);
         },
         _ => {},
@@ -56,10 +57,18 @@ pub fn compress_file(file_name: String, options: Options) {
 
 fn quantize(buffer: &[RGBA], width: usize, height: usize) -> (Vec<RGBA>, Vec<u8>) {
     let mut liq = imagequant::new();
-    liq.set_speed(1);
-    liq.set_quality(70, 99);
+    match liq.set_speed(1) {
+        Err(e) => panic!("{e}"),
+        _ => {}
+    };
+
+    match liq.set_quality(70, 99){
+        Err(e) => panic!("{e}"),
+        _ => {},
+    };
+
     let ref mut img = liq
-        .new_image(&buffer, width as usize, height as usize, 0.45455)
+        .new_image(buffer, width as usize, height as usize, 0.45455)
         .unwrap();
     let mut res = match liq.quantize(img) {
         Ok(res) => res,

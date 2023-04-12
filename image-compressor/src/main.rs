@@ -1,29 +1,43 @@
 mod image;
 extern crate clap;
 
-use clap::{App, Arg};
-use png::{compress_file, Options};
+use clap::{command, Parser};
+use image::{compress_file, Options};
+use core::panic;
 use std::path::Path;
-use std::process;
+
+/// Image Compresser Application
+#[derive(Parser, Debug)]
+#[command(name = "ic", about = "Image Compresser Application", long_about = None)]
+#[command(arg_required_else_help = true)]
+struct Cli {
+    /// Image File Path 
+    #[arg(short, long)]
+    image: String,
+
+    /// Add Extention Flag
+    #[arg(short = 'o', long = "option", default_value_t = true)]
+    add_ext: bool,
+}
+
 
 fn main() {
-    let matches = App::new("tiny-image")
-        .version("0.1.0")
-        .author("hanje. hanjie@youzan.com")
-        .about("A image compressor written in Rust")
-        .arg(
-            Arg::with_name("IMAGE")
-                .help("Image to compress.")
-                .empty_values(false),
-        )
-        .get_matches();
 
-    if let Some(file) = matches.value_of("IMAGE") {
-        if Path::new(&file).exists() {
-            compress_file(String::from(file), Options { add_ext: true });
-        } else {
-            eprintln!("[tiny-image Error] No such file or directory.");
-            process::exit(1); // exit
-        }
+    let mut opt: Options = Options { add_ext:true };
+
+    let img_path = Cli::parse().image;
+    let op = Cli::parse().add_ext;
+
+    println!("{}{}", img_path, op);
+
+    if !Path::new(&img_path).exists() {
+        eprintln!("Invalid Path: `{img_path}`");
+        panic!("Invalid Path");
     }
+
+    if !op {
+        opt.add_ext = false;
+    }
+
+    compress_file(img_path, opt);
 }

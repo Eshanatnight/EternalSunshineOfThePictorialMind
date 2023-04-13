@@ -26,6 +26,7 @@ impl Compressor {
         }
     }
 
+    #[allow(dead_code)]
     pub fn compress_from_memory(&self, input: &[u8]) -> PngResult<Vec<u8>> {
         let opts = self.get_options();
         let result = optimize_from_memory(&input, &opts);

@@ -4,5 +4,4 @@
 members = [
     "img-compressor",
     "image-compress",
-    "image-compressor"
 ]

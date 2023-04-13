@@ -4,9 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "ic-cli"
+path = "src/cli.rs"
+
+[[bin]]
+name = "ic-server"
+path = "src/main.rs"
 
 [dependencies]
 rocket = "0.5.0-rc.2"
 oxipng= "5.0.1"
 rocket-multipart-form-data= "0.10.2"
 rocket-raw-response = "0.5"
+clap = {version = "4.2.1", features = ["derive"]}
